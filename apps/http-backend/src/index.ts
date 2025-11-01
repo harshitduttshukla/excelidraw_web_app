@@ -8,9 +8,18 @@ import cors from "cors";
 
 const app = express();
 app.use(express.json());
-app.use(cors())
 
-app.post("/signup", async (req, res) => {
+
+
+// ✅ Correct and secure CORS setup
+app.use(cors({
+  origin: 'http://localhost:3000', // your frontend origin
+  credentials: true, // allow cookies / tokens
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.post("/api/auth/signup", async (req, res) => {
 
     const parsedData = CreateUserSchema.safeParse(req.body);
     if (!parsedData.success) {
@@ -39,7 +48,7 @@ app.post("/signup", async (req, res) => {
     }
 })
 
-app.post("/signin", async (req, res) => {
+app.post("/api/auth/signin", async (req, res) => {
     const parsedData = SigninSchema.safeParse(req.body);
     if (!parsedData.success) {
         res.json({
@@ -139,5 +148,7 @@ app.get("/room/:slug", async (req, res) => {
         room
     })
 })
+
+
 
 app.listen(3001);
